@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Dec 20 10:02:43 2021
+Created on Tue Jan 11 13:47:52 2022
 
 @author: erri
 """
+
 import numpy as np
 from scipy import optimize as opt
 import matplotlib.pyplot as plt
-
-xData = np.array([0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0])
-yData = np.array([6.04, 8.86, 10.18, 11.12, 12.4, 13.13, 13.58, 14.62])
-
 
 def interpolate(func, xData, yData, ic=None, bounds=(-np.inf, np.inf)):
     # Interpolate data by fitting a given function, then returns the interpolated curve as a 1d array.
@@ -27,11 +24,17 @@ def interpolate(func, xData, yData, ic=None, bounds=(-np.inf, np.inf)):
         intCurve = -1 * np.ones(len(xData))
     return par, intCurve, covar
 
+# Scour and deposition volumes interpolation function
 def func(x,A,B):
     y = A*(1-np.exp(-x/B))
     return y
 
-par, intCurve, covar = interpolate(func, xData, yData)
+yData = np.array([6595700,7812280,6926250,7987720,8540780,6828000,6529800,6166120,6645980,11114100,10371400,10372100,11601400,11112900,8412380,8097170,8523100,12225800,10936900,11507100,12061200,12026000,9702880,10717800,12362500,12066500,11205900,13652900,13113300,11662600,13789500,12648200,12422900,14441200,14608100,14614500,13473200,13158600,15872800,15143100,14249600,14954000,15918000,15752700,17057200])
+xData = np.array([1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,4,4,4,4,4,4,5,5,5,5,5,6,6,6,6,7,7,7,8,8,9])
+ic=np.array([np.mean(yData),np.min(xData)]) # Initial parameter guess
+
+par, intCurve, covar = interpolate(func, xData, yData, ic)
+
 
 print()
 print('Parameters:')
@@ -40,8 +43,8 @@ print('B=', par[1], 'Variance=', covar[1,1])
 
 
 fig1, ax1 = plt.subplots(dpi=100)
-ax1.scatter(xData, yData, c='red')
-ax1.plot(xData, intCurve)
+ax1.scatter(xData, yData)
+ax1.plot(xData, intCurve, c='red')
 ax1.set_title('Interpolation')
 ax1.set_xlabel('xData')
 ax1.set_ylabel('yData')
